@@ -10,12 +10,12 @@ mvn clean archetype:create-from-project
 ```xml
 <distributionManagement>
     <repository>
-      <id>releases</id>
+      <id>nexus-releases</id>
       <name>Nexus Release Repository</name>
       <url>http://127.0.0.1:8898/repository/maven-releases</url>
     </repository>
     <snapshotRepository>
-      <id>snapshots</id>
+      <id>nexus-snapshots</id>
       <name>Nexus Snapshots Repository</name>
       <url>http://127.0.0.1:8898/repository/maven-snapshots</url>
     </snapshotRepository>
@@ -45,14 +45,18 @@ mvn deploy
   </proxies>
     
   <servers>
-
     <server>
-       <id>snapshots</id>
+        <id>nexus</id>
+        <username>admin</username>
+        <password>123456</password>
+    </server>
+    <server>
+       <id>nexus-snapshots</id>
        <username>admin</username>
        <password>123456</password>
      </server>
      <server>
-       <id>releases</id>
+       <id>nexus-releases</id>
        <username>admin</username>
        <password>123456</password>
      </server>
@@ -78,12 +82,40 @@ mvn deploy
             <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         </properties>
     </profile>
+
+      <profile>
+          <id>nexus</id>
+          <repositories>
+              <repository>
+                  <id>releases</id>
+                  <url>http://127.0.0.1:8898/repository/maven-releases/</url>
+                  <releases>
+                      <enabled>true</enabled>
+                  </releases>
+                  <snapshots>
+                      <enabled>false</enabled>
+                  </snapshots>
+              </repository>
+              <repository>
+                  <id>snapshots</id>
+                  <url>http://127.0.0.1:8898/repository/maven-snapshots/</url>
+                  <releases>
+                      <enabled>false</enabled>
+                  </releases>
+                  <snapshots>
+                      <enabled>true</enabled>
+                  </snapshots>
+              </repository>
+          </repositories>
+      </profile>
       
   </profiles>
     
   <activeProfiles>
-        <activeProfile>default-profile</activeProfile>
+      <activeProfile>default-profile</activeProfile>
+      <activeProfile>nexus</activeProfile>
   </activeProfiles>
 </settings>
-
 ```
+## 6.使用IDEA根据nexus的archetype创建项目
+![2.jpg](shortcuts/2.jpg)
