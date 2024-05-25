@@ -1,12 +1,13 @@
 package com.webapi.common.exception;
 
+
 import com.webapi.common.exception.enums.IBusinessException;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class BusinessException extends RuntimeException{
+public final class BusinessException extends RuntimeException{
 
     private IBusinessException errorInfo;
 

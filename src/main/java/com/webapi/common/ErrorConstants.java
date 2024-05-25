@@ -5,6 +5,7 @@ public interface ErrorConstants {
     // 系统异常
     int ERR_500 = 500;
     int ERR_999 = 999;
+    int ERR_1000 = 1000;
 
     // 业务异常
     int ERR_10000 = 10000;

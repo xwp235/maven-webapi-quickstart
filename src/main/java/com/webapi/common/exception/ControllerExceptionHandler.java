@@ -2,7 +2,8 @@ package com.webapi.common.exception;
 
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.util.ArrayUtil;
-
+import cn.hutool.core.util.ClassUtil;
+import com.webapi.App;
 import com.webapi.common.AppConstants;
 import com.webapi.common.advice.IgnoreRespSerializable;
 import com.webapi.common.exception.enums.BusinessExceptionEnum;
@@ -123,10 +124,13 @@ public class ControllerExceptionHandler {
                 .set(AppConstants.ERROR_TYPE,errorInfo.getType())
                 .set(AppConstants.TRACE_ID,MDC.get(AppConstants.LOG_ID));
         var rootErrorInfo = getRootErrorInfo(e);
-        if (Objects.nonNull(rootErrorInfo)) {
-            LogUtil.error(MessageUtil.getMessage("business")+errorInfo, e);
-        } else {
-            LogUtil.error(MessageUtil.getMessage("businessExceptionOccurred"), e);
+
+        if (errorInfo.shouldLog()) {
+            if (Objects.nonNull(rootErrorInfo)) {
+                LogUtil.error(MessageUtil.getMessage("business") + errorInfo, e);
+            } else {
+                LogUtil.error(MessageUtil.getMessage("businessExceptionOccurred"), e);
+            }
         }
         return resp;
     }
@@ -143,10 +147,12 @@ public class ControllerExceptionHandler {
                 .set(AppConstants.TRACE_ID,MDC.get(AppConstants.LOG_ID));
 
         var errorInfo = getRootErrorInfo(e);
-        if (Objects.nonNull(errorInfo)) {
-            LogUtil.error(MessageUtil.getMessage("system")+errorInfo, e);
-        } else {
-            LogUtil.error("systemExceptionOccurred", e);
+        if (e.isShouldLog()) {
+            if (Objects.nonNull(errorInfo)) {
+                LogUtil.error(MessageUtil.getMessage("system") + errorInfo, e);
+            } else {
+                LogUtil.error("systemExceptionOccurred", e);
+            }
         }
         return resp;
     }
@@ -175,7 +181,20 @@ public class ControllerExceptionHandler {
         if (ArrayUtil.isEmpty(stackTrace)) {
             return null;
         }
+        // 获取
+        var rootPackage = ClassUtil.getPackage(App.class);
+        return getRootInfoDetail(stackTrace, rootPackage);
+    }
+
+    private RootErrorInfo getRootInfoDetail(StackTraceElement[] stackTrace, String rootPackage) {
         var info = stackTrace[0];
+        for (StackTraceElement stackTraceElement : stackTrace) {
+            var stackElStr = stackTraceElement.toString();
+            if (stackElStr.contains(rootPackage)) {
+                info = stackTraceElement;
+                break;
+            }
+        }
         var rootErrorInfo = new RootErrorInfo();
         rootErrorInfo.setLineNumber(info.getLineNumber());
         rootErrorInfo.setClassName(info.getClassName());
