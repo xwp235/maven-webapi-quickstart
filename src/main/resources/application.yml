@@ -41,3 +41,14 @@ management:
     git:
       enabled: on
       mode: full
+    java:
+      enabled: on
+    env:
+      enabled: on
+    os:
+      enabled: off
+    process:
+      enabled: off
+info:
+  app:
+    name: ${spring.application.name}

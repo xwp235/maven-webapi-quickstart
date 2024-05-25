@@ -14,6 +14,7 @@
     <spring-boot.version>3.3.0</spring-boot.version>
     <dotenv-java.version>3.0.0</dotenv-java.version>
     <hutool.version>5.8.27</hutool.version>
+    <git-commit-id-maven-plugin.version>8.0.2</git-commit-id-maven-plugin.version>
 
     <java.version>17</java.version>
     <maven.compiler.source>17</maven.compiler.source>
@@ -132,6 +133,35 @@
           <parameters>true</parameters>
           <source>17</source>
           <target>17</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>io.github.git-commit-id</groupId>
+        <artifactId>git-commit-id-maven-plugin</artifactId>
+        <version>${git-commit-id-maven-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>get-the-git-infos</id>
+            <goals>
+              <goal>revision</goal>
+            </goals>
+            <!-- *NOTE*: The default phase of revision is initialize, but in case you want to
+                         change it, you can do so by adding the phase here -->
+            <phase>initialize</phase>
+          </execution>
+          <execution>
+            <id>validate-the-git-infos</id>
+            <goals>
+              <goal>validateRevision</goal>
+            </goals>
+            <!-- *NOTE*: The default phase of validateRevision is verify, but in case you want to
+                         change it, you can do so by adding the phase here -->
+            <phase>package</phase>
+          </execution>
+        </executions>
+        <configuration>
+          <dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
+          <generateGitPropertiesFile>true</generateGitPropertiesFile>
         </configuration>
       </plugin>
       <plugin>
