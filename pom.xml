@@ -11,7 +11,7 @@
   <url>https://maven.apache.org</url>
 
   <properties>
-    <spring-boot.version>3.2.5</spring-boot.version>
+    <spring-boot.version>3.3.0</spring-boot.version>
     <dotenv-java.version>3.0.0</dotenv-java.version>
     <hutool.version>5.8.27</hutool.version>
 
